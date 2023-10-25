@@ -10,6 +10,17 @@
 
 @implementation UIView (SBExtension)
 
++ (instancetype)createWithFrame:(CGRect)frame {
+    
+    return [[self alloc] initWithFrame:frame];
+}
+
+- (void)setBorder:(CGFloat)width color:(UIColor *)color redius:(CGFloat)radius {
+    self.layer.masksToBounds = YES; //允许绘制
+    self.layer.cornerRadius = radius;//边框弧度
+    self.layer.borderColor = color.CGColor; //边框颜色
+    self.layer.borderWidth = width; //边框的宽度
+}
 
 - (void)setSb_x:(CGFloat)sb_x {
     CGRect frame = self.frame;

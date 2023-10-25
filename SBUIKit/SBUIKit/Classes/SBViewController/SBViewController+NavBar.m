@@ -11,7 +11,6 @@
 
 #import "SBFoundation.h"
 
-#import "SBLabel.h"
 #import "SBControl.h"
 
 #import "UIImage+SBExtension.h"

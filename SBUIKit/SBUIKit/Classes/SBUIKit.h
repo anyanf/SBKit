@@ -8,6 +8,7 @@
 #ifndef SBUIKit_h
 #define SBUIKit_h
 
+#import "SBFoundation.h"
 
 #import "SBUIKitMacro.h"
 
@@ -35,21 +36,18 @@
 #import "SBImageView.h"
 
 // label
-#import "SBLabel.h"
+#import "UILabel+SBExtension.h"
 
 // 导航控制器
 #import "SBNavigationController.h"
-
-// 菊花，吐司
-#import "SBProgressHUD.h"
 
 // tabbar控制器
 #import "SBTabBarController.h"
 
 // tableview
 #import "SBTableView.h"
-#import "SBTableViewCell.h"
-#import "SBTableViewHeaderFooterView.h"
+#import "UITableViewCell+SBExtension.h"
+#import "UITableViewHeaderFooterView+SBExtension.h"
 
 // 表格
 #import "SBGridTableView.h"
@@ -61,7 +59,6 @@
 #import "SBTextField.h"
 
 // view
-#import "SBView.h"
 #import "UIView+SBExtension.h"
 
 // 控制器

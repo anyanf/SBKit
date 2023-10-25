@@ -5,7 +5,6 @@
 //  Created by 安康 on 2020/2/6.
 //
 
-#import "SBView.h"
 
 #import "SBButton.h"
 
@@ -39,7 +38,7 @@ typedef NS_ENUM(NSUInteger, SBWarningViewItem_Type) {
 
 @end
 
-@interface SBWarningView : SBView
+@interface SBWarningView : UIView
 
 - (void)config:(NSArray<SBWarningViewItem *> *)items;
 

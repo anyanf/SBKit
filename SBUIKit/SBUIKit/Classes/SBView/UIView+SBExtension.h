@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIView (SBExtension)
 
++ (instancetype)createWithFrame:(CGRect)frame;
+
 @property (assign, nonatomic) CGFloat sb_x;
 @property (assign, nonatomic) CGFloat sb_y;
 @property (assign, nonatomic) CGFloat sb_w;

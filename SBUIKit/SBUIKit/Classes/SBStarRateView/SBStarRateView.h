@@ -5,7 +5,7 @@
 //  Created by ankang on 2020/12/29.
 //
 
-#import "SBView.h"
+#import "UIView+SBExtension.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface SBStarRateView : SBView
+@interface SBStarRateView : UIView
 
 
 @property (nonatomic, weak) id<SBStarRateViewDelegate>delegate;

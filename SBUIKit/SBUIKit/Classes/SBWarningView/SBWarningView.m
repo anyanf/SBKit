@@ -8,10 +8,10 @@
 #import "SBWarningView.h"
 
 #import "SBImageView.h"
-#import "SBLabel.h"
 #import "SBButton.h"
 
 #import "UIView+SBExtension.h"
+#import "UILabel+SBExtension.h"
 
 @implementation SBWarningViewItem @end
 
@@ -56,7 +56,7 @@
                 
             case SBWarningViewItem_Type_Title: {
                 
-                SBLabel *title = [SBLabel createWithFrame:frame
+                UILabel *title = [UILabel createWithFrame:frame
                                                      text:item.text
                                                 textColor:item.textColor
                                                      font:item.textFont
@@ -66,7 +66,7 @@
             }
                 break;
             case SBWarningViewItem_Type_Desc: {
-                SBLabel *desc = [SBLabel createWithFrame:frame
+                UILabel *desc = [UILabel createWithFrame:frame
                                                     text:item.text
                                                textColor:item.textColor
                                                     font:item.textFont
