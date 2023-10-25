@@ -28,9 +28,11 @@
  * (like a one line \c if). In practice, this is not an issue, since \@onExit is
  * a useless construct in such a case anyways.
  */
+#ifndef onExit
 #define onExit \
-    ext_keywordify \
-    __strong ext_cleanupBlock_t metamacro_concat(ext_exitBlock_, __LINE__) __attribute__((cleanup(sb_ext_executeCleanupBlock), unused)) = ^
+    sb_keywordify \
+    __strong sb_cleanupBlock_t metamacro_concat(sb_exitBlock_, __LINE__) __attribute__((cleanup(sb_executeCleanupBlock), unused)) = ^
+#endif
 
 /**
  * Creates \c __weak shadow variables for each of the variables provided as
@@ -42,17 +44,21 @@
  *
  * See #strongify for an example of usage.
  */
+#ifndef weakify
 #define weakify(...) \
-    ext_keywordify \
-    metamacro_foreach_cxt(ext_weakify_,, __weak, __VA_ARGS__)
+    sb_keywordify \
+    metamacro_foreach_cxt(sb_weakify_,, __weak, __VA_ARGS__)
+#endif
 
 /**
  * Like #weakify, but uses \c __unsafe_unretained instead, for targets or
  * classes that do not support weak references.
  */
+#ifndef unsafeify
 #define unsafeify(...) \
-    ext_keywordify \
-    metamacro_foreach_cxt(ext_weakify_,, __unsafe_unretained, __VA_ARGS__)
+    sb_keywordify \
+    metamacro_foreach_cxt(sb_weakify_,, __unsafe_unretained, __VA_ARGS__)
+#endif
 
 /**
  * Strongly references each of the variables provided as arguments, which must
@@ -80,28 +86,30 @@
 
  * @endcode
  */
+#ifndef strongify
 #define strongify(...) \
-    ext_keywordify \
+    sb_keywordify \
     _Pragma("clang diagnostic push") \
     _Pragma("clang diagnostic ignored \"-Wshadow\"") \
-    metamacro_foreach(ext_strongify_,, __VA_ARGS__) \
+    metamacro_foreach(sb_strongify_,, __VA_ARGS__) \
     _Pragma("clang diagnostic pop")
+#endif
 
 /*** implementation details follow ***/
-typedef void (^ext_cleanupBlock_t)(void);
+typedef void (^sb_cleanupBlock_t)(void);
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-    void sb_ext_executeCleanupBlock (__strong ext_cleanupBlock_t *block);
+    void sb_executeCleanupBlock (__strong sb_cleanupBlock_t *block);
 #if defined(__cplusplus)
 }
 #endif
 
-#define ext_weakify_(INDEX, CONTEXT, VAR) \
+#define sb_weakify_(INDEX, CONTEXT, VAR) \
     CONTEXT __typeof__(VAR) metamacro_concat(VAR, _weak_) = (VAR);
 
-#define ext_strongify_(INDEX, VAR) \
+#define sb_strongify_(INDEX, VAR) \
     __strong __typeof__(VAR) VAR = metamacro_concat(VAR, _weak_);
 
 // Details about the choice of backing keyword:
@@ -116,7 +124,7 @@ extern "C" {
 // analysis, and to use @try/@catch otherwise to avoid insertion of unnecessary
 // autorelease pools.
 #if defined(DEBUG) && !defined(NDEBUG)
-#define ext_keywordify autoreleasepool {}
+#define sb_keywordify autoreleasepool {}
 #else
-#define ext_keywordify try {} @catch (...) {}
+#define sb_keywordify try {} @catch (...) {}
 #endif

@@ -9,7 +9,7 @@
 
 #import "SBEXTScope.h"
 
-void sb_ext_executeCleanupBlock (__strong ext_cleanupBlock_t *block) {
+void sb_executeCleanupBlock (__strong sb_cleanupBlock_t *block) {
     (*block)();
 }
 

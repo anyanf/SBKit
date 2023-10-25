@@ -71,23 +71,23 @@
     return self.frame.origin;
 }
 
-- (CGFloat)sb_right {
+- (CGFloat)sb_maxX {
     return self.frame.origin.x + self.frame.size.width;
 }
 
-- (void)setSb_right:(CGFloat)right {
+- (void)setSb_maxX:(CGFloat)maxX {
     CGRect frame = self.frame;
-    frame.origin.x = right - frame.size.width;
+    frame.origin.x = maxX - frame.size.width;
     self.frame = frame;
 }
 
-- (CGFloat)sb_bottom {
+- (CGFloat)sb_maxY {
     return self.frame.origin.y + self.frame.size.height;
 }
 
-- (void)setSb_bottom:(CGFloat)bottom {
+- (void)setSb_maxY:(CGFloat)maxY {
     CGRect frame = self.frame;
-    frame.origin.y = bottom - frame.size.height;
+    frame.origin.y = maxY - frame.size.height;
     self.frame = frame;
 }
 

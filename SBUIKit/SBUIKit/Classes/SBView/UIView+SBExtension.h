@@ -17,8 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) CGFloat sb_h;
 @property (assign, nonatomic) CGSize sb_size;
 @property (assign, nonatomic) CGPoint sb_origin;
-@property (assign, nonatomic) CGFloat sb_right;
-@property (assign, nonatomic) CGFloat sb_bottom;
+@property (assign, nonatomic) CGFloat sb_maxX;
+@property (assign, nonatomic) CGFloat sb_maxY;
 @property (assign, nonatomic) CGFloat sb_centerX;
 @property (assign, nonatomic) CGFloat sb_centerY;
 
