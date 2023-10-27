@@ -118,7 +118,14 @@
     self.center = CGPointMake(self.center.x, centerY);
 }
 
+- (CGFloat)sb_cornerRadius {
+    return  self.layer.cornerRadius;
+}
 
+- (void)setSb_cornerRadius:(CGFloat)sb_cornerRadius {
+    self.layer.cornerRadius = sb_cornerRadius;
+    self.layer.masksToBounds = YES;
+}
 
 
 - (CGFloat)safeBottomInset {

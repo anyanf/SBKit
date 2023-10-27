@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIView (SBExtension)
 
+/// 初始化
 + (instancetype)createWithFrame:(CGRect)frame;
 
 @property (assign, nonatomic) CGFloat sb_x;
@@ -23,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) CGFloat sb_maxY;
 @property (assign, nonatomic) CGFloat sb_centerX;
 @property (assign, nonatomic) CGFloat sb_centerY;
+
+@property (assign, nonatomic) CGFloat sb_cornerRadius;
 
 /** 全面屏底部的安全区域 */
 - (CGFloat)safeBottomInset;
