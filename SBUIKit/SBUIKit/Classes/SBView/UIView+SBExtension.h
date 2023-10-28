@@ -7,9 +7,12 @@
 
 #import <UIKit/UIKit.h>
 
+#import "SBViewProtocol.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIView (SBExtension)
+<SBViewProtocol>
 
 /// 初始化
 + (instancetype)createWithFrame:(CGRect)frame;
@@ -27,8 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) CGFloat sb_cornerRadius;
 
-/** 全面屏底部的安全区域 */
-- (CGFloat)safeBottomInset;
+- (void)sb_handleModel:(id _Nullable)model;
 
 @end
 

@@ -16,7 +16,7 @@
 #import "SBAlert.h"
 
 // 按钮
-#import "SBButton.h"
+#import "UIButton+SBExtension.h"
 
 // collection
 #import "SBCollectionView.h"
@@ -27,7 +27,7 @@
 #import "UIColor+SBExtension.h"
 
 // 控制
-#import "SBControl.h"
+#import "UIControl+SBExtension.h"
 
 // 图片
 #import "UIImage+SBExtension.h"

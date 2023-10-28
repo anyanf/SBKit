@@ -14,13 +14,4 @@
     self.contentView.backgroundColor = backgroundColor;
 }
 
-- (void)handleModel:(id)model {
-
-}
-
-+ (CGFloat)cellHeightWithModel:(id)model {
-    return CGFLOAT_MIN;
-}
-
-
 @end

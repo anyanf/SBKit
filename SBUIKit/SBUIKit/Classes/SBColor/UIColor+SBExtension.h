@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param argb 0xFFFFFFFF
  @return UIColor
  */
-+ (UIColor *)sb_colorWithARGB:(NSUInteger)argb;
++ (UIColor *)sb_colorWithARGB:(uint32_t)argb;
 
 
 /*!
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param rgb 0xFFFFFF
  @return UIColor
  */
-+ (UIColor *)sb_colorWithRGB:(NSUInteger)rgb;
++ (UIColor *)sb_colorWithRGB:(uint32_t)rgb;
 
 
 /*!
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param alpha 0-1
  @return UIColor
  */
-+ (UIColor *)sb_colorWithRGB:(NSUInteger)rgb alpha:(CGFloat)alpha;
++ (UIColor *)sb_colorWithRGB:(uint32_t)rgb alpha:(CGFloat)alpha;
 
 /** rgb不需要传小数，0-255即可 */
 + (UIColor *)sb_r:(CGFloat)red g:(CGFloat)green b:(CGFloat)blue;

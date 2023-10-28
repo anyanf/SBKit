@@ -13,10 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setCellAndContentViewBackgroundColor:(UIColor *)backgroundColor;
 
-- (void)handleModel:(id)model;
-
-+ (CGFloat)cellHeightWithModel:(id __nullable)model;
-
 @end
 
 NS_ASSUME_NONNULL_END

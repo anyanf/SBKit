@@ -6,7 +6,7 @@
 //
 
 
-#import "SBButton.h"
+#import "UIButton+SBExtension.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, SBWarningViewItem_Type) {
 @property (nonatomic, strong) UIFont *textFont;
 
 // btn 需要
-@property (nonatomic, strong) SBButtonEventBlock btnEventBlock;
+@property (nonatomic, strong) SBControlEventBlock btnEventBlock;
 
 // SBWarningViewItem_Type_Img 需要
 @property (nonatomic, strong) UIImage *img;

@@ -128,14 +128,34 @@
 }
 
 
-- (CGFloat)safeBottomInset {
-    
-    // 只有iOS11以上才有全面屏
-    if (@available(iOS 11.0, *)) {
-        return self.safeAreaInsets.bottom;
-    } else {
-        return 0;
-    }
+#pragma mark - SBViewProtocol默认实现
+
++ (CGFloat)sb_viewHeight {
+    return 0;
+}
+
++ (CGFloat)sb_viewHeightWithMaxSize:(CGSize)maxSize {
+    return 0;
+}
+
++ (CGFloat)sb_viewHeightWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize {
+    return 0;
+}
+
++ (CGSize)sb_viewSize {
+    return CGSizeZero;
+}
+
++ (CGSize)sb_viewSizeWithMaxSize:(CGSize)maxSize {
+    return CGSizeZero;
+}
+
++ (CGSize)sb_viewSizeWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize {
+    return CGSizeZero;
+}
+
+- (void)sb_handleModel:(id _Nullable)model {
+    // 等继承实现
 }
 
 

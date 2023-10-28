@@ -16,26 +16,26 @@
 
 
 
-+ (UIColor *)sb_colorWithARGB:(NSUInteger)argb {
++ (UIColor *)sb_colorWithARGB:(uint32_t)argb {
     CGFloat alpha = (argb > 0xFFFFFF) ? (((argb>>24)&0xFF)/255.0f) : 1.0f;
     return [UIColor sb_colorWithRGB:argb alpha:alpha];
     
 }
 
 
-+ (UIColor *)sb_colorWithRGB:(NSUInteger)rgb {
++ (UIColor *)sb_colorWithRGB:(uint32_t)rgb {
     return [UIColor sb_colorWithRGB:rgb alpha:1.0f];
 }
 
 
-+ (UIColor *)sb_colorWithRGB:(NSUInteger)rgb alpha:(CGFloat)alpha {
-    NSUInteger red = (rgb>>16)&0xFF;
-    NSUInteger green = (rgb>>8)&0xFF;
-    NSUInteger blue = rgb&0xFF;
++ (UIColor *)sb_colorWithRGB:(uint32_t)rgb alpha:(CGFloat)alpha {
+    uint32_t red = (rgb>>16)&0xFF;
+    uint32_t green = (rgb>>8)&0xFF;
+    uint32_t blue = rgb&0xFF;
     return [UIColor sb_r:red
                        g:green
                        b:blue
-                   alpha:alpha];    
+                   alpha:alpha];
 }
 
 
@@ -170,7 +170,7 @@
 + (UIColor*)sb_randomColor {
     return [UIColor sb_r:random() % 256 g:random() % 256 b:random() % 256];
 }
-    
-    
+
+
 
 @end

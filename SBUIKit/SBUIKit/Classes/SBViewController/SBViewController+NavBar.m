@@ -11,9 +11,9 @@
 
 #import "SBFoundation.h"
 
-#import "SBControl.h"
-
 #import "UIImage+SBExtension.h"
+
+#import "UIControl+SBExtension.h"
 
 
 @implementation SBViewController (NavBar)
@@ -71,11 +71,11 @@
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:view];
     
-    SBControl *control = [SBControl createWithFrame:leftItem.customView.bounds
-                                         eventBlock:^(SBControl * _Nonnull control, UIControlEvents controlEvents) {
-        if (clickBlock) {
-            clickBlock();
-        }
+    UIControl *control = [UIControl createWithFrame:leftItem.customView.bounds];
+    [control addTouchUpInsideEvent:^(UIControl * _Nonnull button, UIControlEvents controlEvents) {
+            if (clickBlock) {
+                clickBlock();
+            }
     }];
     
     leftItem.customView.userInteractionEnabled = YES;
@@ -96,11 +96,11 @@
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:view];
 
-    SBControl *control = [SBControl createWithFrame:rightItem.customView.bounds
-                                         eventBlock:^(SBControl * _Nonnull control, UIControlEvents controlEvents) {
-        if (clickBlock) {
-            clickBlock();
-        }
+    UIControl *control = [UIControl createWithFrame:rightItem.customView.bounds];
+    [control addTouchUpInsideEvent:^(UIControl * _Nonnull button, UIControlEvents controlEvents) {
+            if (clickBlock) {
+                clickBlock();
+            }
     }];
     
     rightItem.customView.userInteractionEnabled = YES;

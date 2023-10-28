@@ -8,7 +8,6 @@
 #import "SBWarningView.h"
 
 #import "SBImageView.h"
-#import "SBButton.h"
 
 #import "UIView+SBExtension.h"
 #import "UILabel+SBExtension.h"
@@ -75,8 +74,8 @@
             }
                 break;
             case SBWarningViewItem_Type_Btn: {
-                SBButton *btn = [SBButton createWithFrame:frame
-                                               eventBlock:item.btnEventBlock];
+                UIButton *btn = [UIButton createWithFrame:frame];
+                [btn addTouchUpInsideEvent:item.btnEventBlock];
                 
                 [btn setTitle:item.text titleColor:item.textColor forState:UIControlStateNormal];
                 btn.titleLabel.font = item.textFont;

@@ -5,6 +5,9 @@
 //  Created by 安康 on 2019/9/28.
 //
 
+#import "UIApplication+SBExtension.h"
+
+
 #ifndef SBUIKitMacro_h
 #define SBUIKitMacro_h
 
@@ -41,15 +44,17 @@
 #define SB_SAFE_SCREEN_NO_NAV_H_K (SB_SCREEN_H_K - SB_SAFE_NAV_TOP_INSET - SB_SAFE_BOTTOM_INSET)
 // 从状态栏到底部安全区域的高度，刘海屏底部会留出间距
 #define SB_SAFE_SCREEN_H_K (SB_SCREEN_H_K - SB_SAFE_TOP_INSET - SB_SAFE_BOTTOM_INSET)
+// 从状态栏到tabbar的安全高度
+#define SB_SAFE_SCREEN_NO_TAB_H_K (SB_SCREEN_H_K - SB_SAFE_TOP_INSET - SB_SAFE_TAB_BOTTOM_INSET)
 
 // 顶部安全间距
-#define SB_SAFE_TOP_INSET (SB_IS_NOTCH_SCREEN_K ? 44 : 20)
-// 导航条间距
-#define SB_SAFE_NAV_TOP_INSET (44 + SB_SAFE_TOP_INSET)
+#define SB_SAFE_TOP_INSET UIApplication.sb_statusBarHeight
+// 导航条间距（包括安全区）
+#define SB_SAFE_NAV_TOP_INSET UIApplication.sb_navigationFullHeight
 // 底部安全间距
-#define SB_SAFE_BOTTOM_INSET (SB_IS_NOTCH_SCREEN_K ? 34 : 0)
-// tabbar间距
-#define SB_SAFE_TAB_BOTTOM_INSET (SB_IS_NOTCH_SCREEN_K ? 83 : 49)
+#define SB_SAFE_BOTTOM_INSET UIApplication.sb_safeDistanceBottom
+// tabbar间距（包括安全区）
+#define SB_SAFE_TAB_BOTTOM_INSET UIApplication.sb_tabBarFullHeight
 
 
 // 判断刘海屏
