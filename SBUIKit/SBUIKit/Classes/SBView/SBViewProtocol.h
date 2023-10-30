@@ -17,11 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (CGFloat)sb_viewHeightWithMaxSize:(CGSize)maxSize;
 
++ (CGFloat)sb_viewHeightWithModel:(id _Nullable)model;
+
 + (CGFloat)sb_viewHeightWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize;
 
 + (CGSize)sb_viewSize;
 
 + (CGSize)sb_viewSizeWithMaxSize:(CGSize)maxSize;
+
++ (CGSize)sb_viewSizeWithModel:(id _Nullable)model;
 
 + (CGSize)sb_viewSizeWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize;
 

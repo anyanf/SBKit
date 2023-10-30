@@ -138,6 +138,11 @@
     return 0;
 }
 
++ (CGFloat)sb_viewHeightWithModel:(id _Nullable)model {
+    return 0;
+}
+
+
 + (CGFloat)sb_viewHeightWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize {
     return 0;
 }
@@ -150,12 +155,33 @@
     return CGSizeZero;
 }
 
++ (CGSize)sb_viewSizeWithModel:(id _Nullable)model{
+    return CGSizeZero;
+}
+
 + (CGSize)sb_viewSizeWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize {
     return CGSizeZero;
 }
 
 - (void)sb_handleModel:(id _Nullable)model {
     // 等继承实现
+}
+
+- (UIViewController *)sb_parentViewController {
+    UIResponder *parentResponder = self;
+    while (parentResponder) {
+        parentResponder = parentResponder.nextResponder;
+        if ([parentResponder isKindOfClass:UIViewController.class]) {
+            return (UIViewController *)parentResponder;
+        }
+    }
+//    for (UIView *view = self; view; view = view.superview) {
+//        UIResponder *nextResponder = [view nextResponder];
+//        if ([nextResponder isKindOfClass:[UIViewController class]]) {
+//            return (UIViewController *)nextResponder;
+//        }
+//    }
+    return nil;
 }
 
 
