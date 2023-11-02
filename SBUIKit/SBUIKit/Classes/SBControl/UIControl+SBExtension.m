@@ -62,7 +62,11 @@
         return [super pointInside:point withEvent:event];
     } else {
         CGRect relativeFrame = self.bounds;
-        CGRect hitFrame = UIEdgeInsetsInsetRect(relativeFrame, self.hitEdgeInsets);
+        CGRect hitFrame = UIEdgeInsetsInsetRect(relativeFrame,
+                                                UIEdgeInsetsMake(-self.hitEdgeInsets.top,
+                                                                 -self.hitEdgeInsets.left,
+                                                                 -self.hitEdgeInsets.bottom,
+                                                                 -self.hitEdgeInsets.right));
         return CGRectContainsPoint(hitFrame, point);
     }
 }
