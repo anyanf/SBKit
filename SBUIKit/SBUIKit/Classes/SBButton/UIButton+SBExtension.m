@@ -101,10 +101,10 @@
     
     CGSize titleSize = [text sizeWithAttributes:@{NSFontAttributeName: font}];
 
-    CGFloat titleOffset = -(imageSize.height + spacing);
+    CGFloat titleOffset = -(imageSize.width + spacing);
     self.titleEdgeInsets = UIEdgeInsetsMake(0.0, titleOffset, 0.0, -titleOffset);
     
-    CGFloat imageOffset = (titleSize.height + spacing);
+    CGFloat imageOffset = (titleSize.width + spacing);
     self.imageEdgeInsets = UIEdgeInsetsMake(0.0, imageOffset, 0.0, -imageOffset);
     
     CGFloat edgeOffset = fabs(titleSize.height - imageSize.height) / 2.0;

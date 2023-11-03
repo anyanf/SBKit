@@ -27,7 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setBackgroundImageForALLState:(nullable UIImage *)image;
 
+/// 文字图片都在中间
+- (void)centerTextAndImage:(BOOL)imageAboveText spacing:(CGFloat)spacing;
 
+/// 文字左图片右
+- (void)centerTextAndImage:(CGFloat)spacing;
 @end
 
 NS_ASSUME_NONNULL_END
