@@ -20,7 +20,7 @@
 
 // collection
 #import "SBCollectionView.h"
-#import "SBCollectionViewCell.h"
+#import "UICollectionViewCell+SBExtension.h"
 
 
 // 颜色
