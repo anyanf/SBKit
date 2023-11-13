@@ -14,15 +14,11 @@
 
 
 
-@interface SBMultiLevelTableViewCell : UITableViewCell
+@interface SBMultiLevelTableViewCell ()
 
 @property (nonatomic, strong) SBMultiLevelTableNode *node;
 
-@property (nonatomic, strong) UIView *sb_contentView;
-
-@property (nonatomic, strong) UILabel *titleLbl;
-
-@property (nonatomic, strong) UIView *line;
+@property (nonatomic, strong, readwrite) UIView *sb_contentView;
 
 @property (nonatomic, assign) CGRect rect;
 
@@ -45,9 +41,9 @@
 
 - (void)setNode:(SBMultiLevelTableNode *)node {
     _node = node;
-
+    
     //set indentation
-    CGFloat indentationX = (node.level - 1) * self.node.leftMargin;
+    CGFloat indentationX = (node.level - 1) * self.node.levelIndent;
     [self moveNode:indentationX];
     
     //text color
@@ -59,11 +55,10 @@
     
     CGFloat cellHeight = _rect.size.height;
     CGFloat cellWidth  = _rect.size.width;
-        
-    CGFloat contentX = self.node.leftMargin + indentationX;
-    self.sb_contentView.frame = CGRectMake(contentX,
+    
+    self.sb_contentView.frame = CGRectMake(indentationX,
                                            0,
-                                           cellWidth - contentX,
+                                           cellWidth - indentationX - self.node.horiMargin * 2,
                                            cellHeight);
 }
 
@@ -71,9 +66,12 @@
 
 
 //_______________________________________________________________________________________________________________
-#pragma mark 
+#pragma mark
 #pragma mark SBMultiLevelTableView
 @interface SBMultiLevelTableView ()<UITableViewDelegate, UITableViewDataSource>
+
+/// 默认是 SBMultiLevelTableViewCell
+@property (nonatomic, assign) Class cellClass;
 
 @property (nonatomic, copy) NSString *rootID;
 
@@ -95,9 +93,14 @@
 
 #pragma mark
 #pragma mark life cycle
-- (id)initWithFrame:(CGRect)frame nodes:(NSArray*)nodes rootNodeID:(NSString*)rootID needPreservation:(BOOL)need selectBlock:(SBMultiLevelTableSelectBlock)block {
+- (instancetype)initWithFrame:(CGRect)frame
+                    cellClass:(Class)cellClass
+                        nodes:(NSArray*)nodes
+                   rootNodeID:(NSString*)rootID
+             needPreservation:(BOOL)need selectBlock:(SBMultiLevelTableSelectBlock)block {
     self = [self initWithFrame:frame];
     if (self) {
+        self.cellClass = cellClass;
         self.rootID = rootID ?: @"";
         self.preservation = need;
         self.nodes = [nodes copy];
@@ -106,7 +109,7 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -124,7 +127,7 @@
 #pragma mark set node's leaf and root propertys ,and level
 - (void)setNodes:(NSMutableArray *)nodes {
     _nodes = nodes;
-
+    
     [self judgeLeafAndRootNodes];
     
     [self updateNodesLevel];
@@ -136,7 +139,7 @@
 
 - (void)addFirstLoadNodes {
     // add parent nodes on the upper level
-    for (int i = 0 ; i<_nodes.count;i++) {
+    for (int i = 0 ; i < _nodes.count;i++) {
         
         SBMultiLevelTableNode *node = _nodes[i];
         if (node.isRoot) {
@@ -152,7 +155,7 @@
 
 //judge leaf node and root node
 - (void)judgeLeafAndRootNodes {
-    for (int i = 0 ; i<_nodes.count;i++) {
+    for (int i = 0 ; i < _nodes.count;i++) {
         SBMultiLevelTableNode *node = _nodes[i];
         
         BOOL isLeaf = YES;
@@ -181,7 +184,7 @@
 - (void)setDepth:(NSUInteger)level parentIDs:(NSArray*)parentIDs childrenNodes:(NSMutableArray*)childrenNodes {
     
     NSMutableArray *newParentIDs = [NSMutableArray array];
-     NSMutableArray *leftNodes = [childrenNodes  mutableCopy];
+    NSMutableArray *leftNodes = [childrenNodes  mutableCopy];
     
     for (SBMultiLevelTableNode *node in childrenNodes) {
         if ([parentIDs containsObject:node.parentID]) {
@@ -190,7 +193,7 @@
             [newParentIDs addObject:node.childrenID];
         }
     }
-
+    
     if (leftNodes.count > 0) {
         level += 1;
         [self setDepth:level parentIDs:[newParentIDs copy] childrenNodes:leftNodes];
@@ -212,10 +215,16 @@
     static NSString *identifier = @"cell";
     SBMultiLevelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
-        cell = [[SBMultiLevelTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        
+        if ([self.cellClass isSubclassOfClass:SBMultiLevelTableViewCell.class]) {
+            cell = [[self.cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        } else {
+            cell = [[SBMultiLevelTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        }
+        
     }
     SBMultiLevelTableNode *node = [self.tempNodes sb_objectAtIndex:indexPath.row];
-
+    
     cell.rect = CGRectMake(0, 0, CGRectGetWidth(self.frame), node.height);
     cell.node = node;
     return cell;
@@ -241,7 +250,7 @@
     }else{
         //fold
         [self foldNodesForLevel:currentNode.level currentIndex:indexPath.row];
-         [tableView deleteRowsAtIndexPaths:_reloadArray withRowAnimation:UITableViewRowAnimationNone];
+        [tableView deleteRowsAtIndexPaths:_reloadArray withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -264,7 +273,7 @@
 }
 
 - (NSUInteger)expandNodesForParentID:(NSString*)parentID insertIndex:(NSUInteger)insertIndex {
-   
+    
     for (int i = 0 ; i<_nodes.count;i++) {
         SBMultiLevelTableNode *node = _nodes[i];
         if ([node.parentID isEqualToString:parentID]) {
@@ -276,7 +285,7 @@
             [_reloadArray addObject:[NSIndexPath indexPathForRow:insertIndex inSection:0]];//need reload nodes
             
             if (node.isExpand) {
-               insertIndex = [self expandNodesForParentID:node.childrenID insertIndex:insertIndex];
+                insertIndex = [self expandNodesForParentID:node.childrenID insertIndex:insertIndex];
             }
         }
     }

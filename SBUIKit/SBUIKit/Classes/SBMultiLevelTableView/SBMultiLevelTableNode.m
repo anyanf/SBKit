@@ -14,7 +14,8 @@
 {
     self = [super init];
     if (self) {
-        _leftMargin = 30.0;
+        _levelIndent = 12.0;
+        _horiMargin = 0.0;
         _height = 45.0;
     }
     return self;

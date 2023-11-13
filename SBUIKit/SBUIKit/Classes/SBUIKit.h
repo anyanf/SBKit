@@ -8,7 +8,7 @@
 #ifndef SBUIKit_h
 #define SBUIKit_h
 
-#import "SBFoundation.h"
+#import <SBFoundation/SBFoundation.h>
 
 #import "SBUIKitMacro.h"
 

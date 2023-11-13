@@ -10,6 +10,8 @@
 
 @interface SBMultiLevelTableNode : NSObject
 
+#pragma mark - 数据
+
 @property (nonatomic, strong) NSString *parentID;
 
 @property (nonatomic, strong) NSString *childrenID;
@@ -19,13 +21,20 @@
 @property (nonatomic, assign, getter=isExpand) BOOL expand;
 
 
-@property (nonatomic, assign) NSUInteger level;// depth in the tree sturct
+@property (nonatomic, assign) NSUInteger level; // depth in the tree sturct
 
 @property (nonatomic, assign, getter=isLeaf) BOOL leaf;
 
 @property (nonatomic, assign, getter=isRoot) BOOL root;
 
-@property (nonatomic, assign) CGFloat leftMargin;
+
+#pragma mark - UI
+
+/// 层级缩进
+@property (nonatomic, assign) CGFloat levelIndent;
+/// 水平margin
+@property (nonatomic, assign) CGFloat horiMargin;
+
 @property (nonatomic, assign) CGFloat height;
 
 
