@@ -16,6 +16,10 @@
 
 @property (nonatomic, strong) NSString *parentID;
 
+@property (nonatomic, weak) SBMultiLevelTableNode *parentNode;
+
+@property (nonatomic, strong) NSHashTable *childrenNodes;
+
 @property (nonatomic, strong) NSString *name;
 
 @property (nonatomic, assign, getter=isExpand) BOOL expand;

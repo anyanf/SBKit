@@ -77,7 +77,7 @@
 //_______________________________________________________________________________________________________________
 #pragma mark
 #pragma mark SBMultiLevelTableView
-@interface SBMultiLevelTableView ()<UITableViewDelegate, UITableViewDataSource>
+@interface SBMultiLevelTableView ()
 
 /// 默认是 SBMultiLevelTableViewCell
 @property (nonatomic, assign) Class cellClass;
@@ -201,21 +201,55 @@
 - (void)setDepth:(NSUInteger)level parentIDs:(NSArray*)parentIDs childrenNodes:(NSMutableArray*)childrenNodes {
     
     NSMutableArray *newParentIDs = [NSMutableArray array];
-    NSMutableArray *leftNodes = [childrenNodes  mutableCopy];
+    NSMutableArray *newParentNodes = [NSMutableArray array];
+    NSMutableArray *leftNodes = [childrenNodes mutableCopy];
     
     for (SBMultiLevelTableNode *node in childrenNodes) {
         if ([parentIDs containsObject:node.parentID]) {
             node.level = level;
+            
             [leftNodes removeObject:node];
+            [newParentNodes addObject:node];
             [newParentIDs addObject:node.nodeID];
         }
     }
     
     if (leftNodes.count > 0) {
         level += 1;
-        [self setDepth:level parentIDs:[newParentIDs copy] childrenNodes:leftNodes];
+//        [self setDepth:level parentIDs:[newParentIDs copy] childrenNodes:leftNodes];
+        [self setDepth:level parentNodes:[newParentNodes copy] childrenNodes:leftNodes];
     }
 }
+
+- (void)setDepth:(NSUInteger)level parentNodes:(NSArray*)parentNodes childrenNodes:(NSMutableArray*)childrenNodes {
+    
+    NSMutableArray *newParentNodes = [NSMutableArray array];
+    NSMutableArray *leftNodes = [childrenNodes mutableCopy];
+    
+    for (SBMultiLevelTableNode *node in childrenNodes) {
+        
+        // 如果找到父node就建立关系
+        for (SBMultiLevelTableNode *parentNode in parentNodes) {
+            if ([parentNode.nodeID isEqualToString:node.parentID]) {
+                node.level = level;
+                
+                node.parentNode = parentNode;
+                [parentNode.childrenNodes addObject:node];
+                
+                [leftNodes removeObject:node];
+                [newParentNodes addObject:node];
+                continue;
+            }
+        }
+    }
+    
+    if (leftNodes.count > 0) {
+        level += 1;
+        [self setDepth:level parentNodes:[newParentNodes copy] childrenNodes:leftNodes];
+    }
+}
+
+
 
 - (void)setupNodeFrame {
     for (int i = 0 ; i < _nodes.count;i++) {
@@ -265,12 +299,11 @@
         return;
     }
     
-    
     SBMultiLevelTableNode *currentNode = [_tempNodes objectAtIndex:indexPath.row];
     if (currentNode.isLeaf) {
         self.block(currentNode);
         return;
-    }else{
+    } else {
         currentNode.expand = !currentNode.expand;
     }
     
@@ -288,8 +321,10 @@
     }
 }
 
-#pragma mark
-#pragma mark fold and expand
+#pragma mark - reload node
+
+
+#pragma mark -  fold and expand
 - (void)foldNodesForLevel:(NSUInteger)level currentIndex:(NSUInteger)currentIndex {
     
     if (currentIndex+1<_tempNodes.count) {

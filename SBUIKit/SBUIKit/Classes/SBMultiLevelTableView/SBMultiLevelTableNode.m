@@ -16,6 +16,7 @@
     if (self) {
         _levelIndent = 12.0;
         _horiMargin = 0.0;
+        _childrenNodes = [NSHashTable hashTableWithOptions:NSPointerFunctionsWeakMemory];
     }
     return self;
 }

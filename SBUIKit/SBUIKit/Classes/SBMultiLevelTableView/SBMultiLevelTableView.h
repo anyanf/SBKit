@@ -22,7 +22,8 @@ typedef void(^SBMultiLevelTableSelectBlock)(SBMultiLevelTableNode *node);
 
 @end
 
-@interface SBMultiLevelTableView : UITableView
+@interface SBMultiLevelTableView : UITableView <UITableViewDelegate, UITableViewDataSource>
+
 
 // 是否支持折叠展开，默认yes
 @property (nonatomic, assign) BOOL canFoldAndExpand;
