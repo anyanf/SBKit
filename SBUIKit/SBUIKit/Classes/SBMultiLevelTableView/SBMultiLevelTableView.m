@@ -13,14 +13,11 @@
 #import "SBMultiLevelTableNode.h"
 
 
-
 @interface SBMultiLevelTableViewCell ()
 
 @property (nonatomic, strong) SBMultiLevelTableNode *node;
 
 @property (nonatomic, strong, readwrite) UIView *sb_contentView;
-
-@property (nonatomic, assign) CGRect rect;
 
 @end
 
@@ -42,24 +39,36 @@
 - (void)setNode:(SBMultiLevelTableNode *)node {
     _node = node;
     
-    //set indentation
+    // set indentation
     CGFloat indentationX = (node.level - 1) * self.node.levelIndent;
     [self moveNode:indentationX];
     
-    //text color
-    CGFloat rgbValue = (node.level - 1) * 50;
-    self.sb_contentView.backgroundColor  = [UIColor sb_r:rgbValue g:rgbValue b:rgbValue];
+    // color 测试 sb_contentView 区域
+//    CGFloat rgbValue = (node.level - 1) * 50;
+//    self.sb_contentView.backgroundColor  = [UIColor sb_r:rgbValue g:rgbValue b:rgbValue];
 }
 
 - (void)moveNode:(CGFloat)indentationX {
     
-    CGFloat cellHeight = _rect.size.height;
-    CGFloat cellWidth  = _rect.size.width;
+    CGSize cellSize = self.node.cellSizeValue.CGSizeValue;
+    CGFloat cellHeight = cellSize.height;
+    CGFloat cellWidth  = cellSize.width;
     
-    self.sb_contentView.frame = CGRectMake(indentationX,
+    self.sb_contentView.frame = CGRectMake(self.node.horiMargin + indentationX,
                                            0,
                                            cellWidth - indentationX - self.node.horiMargin * 2,
                                            cellHeight);
+}
+
++ (NSValue *)cellSizeWithNode:(SBMultiLevelTableNode *)node
+                      maxSize:(NSValue *)maxSizeValue {
+    
+    if (node.cellSizeValue) {
+        return node.cellSizeValue;
+    }
+    
+    node.cellSizeValue = [NSValue valueWithCGSize:CGSizeMake(maxSizeValue.CGSizeValue.width, 44)];
+    return node.cellSizeValue;
 }
 
 @end
@@ -114,11 +123,17 @@
     if (self) {
         
         self.backgroundColor = [UIColor whiteColor];
+        
         _tempNodes = [NSMutableArray array];
         _reloadArray = [NSMutableArray array];
+        
         self.delegate = self;
         self.dataSource = self;
-        self.separatorStyle =UITableViewCellSeparatorStyleNone;
+        self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        self.showsVerticalScrollIndicator = NO;
+        self.showsHorizontalScrollIndicator = NO;
+
+        self.canFoldAndExpand = YES;
     }
     return self;
 }
@@ -134,6 +149,8 @@
     
     [self addFirstLoadNodes];
     
+    [self setupNodeFrame];
+    
     [self reloadData];
 }
 
@@ -146,7 +163,7 @@
             [_tempNodes addObject:node];
             
             if (node.isExpand) {
-                [self expandNodesForParentID:node.childrenID insertIndex:[_tempNodes indexOfObject:node]];
+                [self expandNodesForParentID:node.nodeID insertIndex:[_tempNodes indexOfObject:node]];
             }
         }
     }
@@ -161,10 +178,10 @@
         BOOL isLeaf = YES;
         BOOL isRoot = YES;
         for (SBMultiLevelTableNode *tempNode in _nodes) {
-            if ([tempNode.parentID isEqualToString:node.childrenID]) {
+            if ([tempNode.parentID isEqualToString:node.nodeID]) {
                 isLeaf = NO;
             }
-            if ([tempNode.childrenID isEqualToString:node.parentID]) {
+            if ([tempNode.nodeID isEqualToString:node.parentID]) {
                 isRoot = NO;
             }
             if (!isRoot && !isLeaf) {
@@ -190,13 +207,27 @@
         if ([parentIDs containsObject:node.parentID]) {
             node.level = level;
             [leftNodes removeObject:node];
-            [newParentIDs addObject:node.childrenID];
+            [newParentIDs addObject:node.nodeID];
         }
     }
     
     if (leftNodes.count > 0) {
         level += 1;
         [self setDepth:level parentIDs:[newParentIDs copy] childrenNodes:leftNodes];
+    }
+}
+
+- (void)setupNodeFrame {
+    for (int i = 0 ; i < _nodes.count;i++) {
+        SBMultiLevelTableNode *node = _nodes[i];
+        if ([self.cellClass isSubclassOfClass:SBMultiLevelTableViewCell.class]) {
+            node.cellSizeValue = [self.cellClass performSelector:@selector(cellSizeWithNode:maxSize:)
+                                                      withObject:node
+                                                      withObject:[NSValue valueWithCGSize:self.frame.size]];
+        } else {
+            node.cellSizeValue = [SBMultiLevelTableViewCell cellSizeWithNode:node
+                                                                     maxSize:[NSValue valueWithCGSize:self.frame.size]];
+        }
     }
 }
 
@@ -208,7 +239,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     SBMultiLevelTableNode *node = [self.tempNodes sb_objectAtIndex:indexPath.row];
-    return node.height;
+    return node.cellSizeValue.CGSizeValue.height;
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -224,13 +255,16 @@
         
     }
     SBMultiLevelTableNode *node = [self.tempNodes sb_objectAtIndex:indexPath.row];
-    
-    cell.rect = CGRectMake(0, 0, CGRectGetWidth(self.frame), node.height);
     cell.node = node;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (!self.canFoldAndExpand) {
+        return;
+    }
+    
     
     SBMultiLevelTableNode *currentNode = [_tempNodes objectAtIndex:indexPath.row];
     if (currentNode.isLeaf) {
@@ -245,7 +279,7 @@
     [_reloadArray removeAllObjects];
     if (currentNode.isExpand) {
         //expand
-        [self expandNodesForParentID:currentNode.childrenID insertIndex:indexPath.row];
+        [self expandNodesForParentID:currentNode.nodeID insertIndex:indexPath.row];
         [tableView insertRowsAtIndexPaths:_reloadArray withRowAnimation:UITableViewRowAnimationNone];
     }else{
         //fold
@@ -264,7 +298,7 @@
             SBMultiLevelTableNode *node = tempArr[i];
             if (node.level <= level) {
                 break;
-            }else{
+            } else {
                 [_tempNodes removeObject:node];
                 [_reloadArray addObject:[NSIndexPath indexPathForRow:i inSection:0]];//need reload nodes
             }
@@ -274,23 +308,26 @@
 
 - (NSUInteger)expandNodesForParentID:(NSString*)parentID insertIndex:(NSUInteger)insertIndex {
     
+    NSUInteger currentIdx = insertIndex;
+
     for (int i = 0 ; i<_nodes.count;i++) {
         SBMultiLevelTableNode *node = _nodes[i];
         if ([node.parentID isEqualToString:parentID]) {
             if (!self.isPreservation) {
                 node.expand = NO;
             }
-            insertIndex++;
-            [_tempNodes insertObject:node atIndex:insertIndex];
-            [_reloadArray addObject:[NSIndexPath indexPathForRow:insertIndex inSection:0]];//need reload nodes
+            
+            currentIdx++;
+            [_tempNodes insertObject:node atIndex:currentIdx];
+            [_reloadArray addObject:[NSIndexPath indexPathForRow:currentIdx inSection:0]]; //need reload nodes
             
             if (node.isExpand) {
-                insertIndex = [self expandNodesForParentID:node.childrenID insertIndex:insertIndex];
+                currentIdx = [self expandNodesForParentID:node.nodeID insertIndex:currentIdx];
             }
         }
     }
     
-    return insertIndex;
+    return currentIdx;
 }
 
 

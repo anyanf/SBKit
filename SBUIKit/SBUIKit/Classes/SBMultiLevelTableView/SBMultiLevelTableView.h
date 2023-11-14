@@ -17,15 +17,21 @@ typedef void(^SBMultiLevelTableSelectBlock)(SBMultiLevelTableNode *node);
 
 - (void)setNode:(SBMultiLevelTableNode *)node;
 
++ (NSValue *)cellSizeWithNode:(SBMultiLevelTableNode *)node
+                      maxSize:(NSValue *)maxSizeValue;
+
 @end
 
 @interface SBMultiLevelTableView : UITableView
 
+// 是否支持折叠展开，默认yes
+@property (nonatomic, assign) BOOL canFoldAndExpand;
 
 - (id)initWithFrame:(CGRect)frame
-                    cellClass:(Class)cellClass
-                        nodes:(NSArray*)nodes
-                   rootNodeID:(NSString*)rootID
-             needPreservation:(BOOL)need selectBlock:(SBMultiLevelTableSelectBlock)block;
+          cellClass:(Class)cellClass
+              nodes:(NSArray*)nodes
+         rootNodeID:(NSString*)rootID
+   needPreservation:(BOOL)need 
+        selectBlock:(SBMultiLevelTableSelectBlock)block;
 
 @end
