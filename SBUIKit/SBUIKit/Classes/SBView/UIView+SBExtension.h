@@ -30,7 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) CGFloat sb_cornerRadius;
 
-- (void)sb_handleModel:(id _Nullable)model;
 
 /// view所在vc
 - (UIViewController *)sb_parentViewController;

@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (CGSize)sb_viewSizeWithModel:(id _Nullable)model andMaxSize:(CGSize)maxSize;
 
-+ (void)sb_handleModel:(id _Nullable)model;
+- (void)sb_handleModel:(id _Nullable)model;
 
 @end
 
