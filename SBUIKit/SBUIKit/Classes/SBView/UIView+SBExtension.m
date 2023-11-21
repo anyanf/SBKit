@@ -127,6 +127,25 @@
     self.layer.masksToBounds = YES;
 }
 
+#pragma mark - 渐变色设置
+
+- (CAGradientLayer *)sb_addGradientColorLayerWithColors:(NSArray<UIColor *> *)colors locations:(NSArray<NSNumber *> *)locations frame:(CGRect)frame startPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
+    
+    CAGradientLayer *gradientColorLayer = [[CAGradientLayer alloc] init];
+    NSMutableArray *colorMutAry = [NSMutableArray array];
+    for (UIColor *color in colors) {
+        [colorMutAry addObject:(__bridge id)color.CGColor];
+    }
+    gradientColorLayer.colors = colorMutAry;
+    gradientColorLayer.locations = locations;
+    gradientColorLayer.frame = frame;
+    gradientColorLayer.startPoint = startPoint;
+    gradientColorLayer.endPoint = endPoint;
+    [self.layer addSublayer:gradientColorLayer];
+    
+    return gradientColorLayer;
+}
+
 
 #pragma mark - SBViewProtocol默认实现
 

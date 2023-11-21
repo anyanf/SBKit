@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) CGFloat sb_cornerRadius;
 
+- (CAGradientLayer *)sb_addGradientColorLayerWithColors:(NSArray<UIColor *> *)colors locations:(NSArray<NSNumber *> *)locations frame:(CGRect)frame startPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint;
+
 
 /// view所在vc
 - (UIViewController *)sb_parentViewController;
