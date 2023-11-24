@@ -89,4 +89,40 @@
     return UIApplication.sb_tabBarHeight + UIApplication.sb_safeDistanceBottom;
 }
 
+/// 获取keywindow
++ (UIWindow *)sb_keyWindow {
+        
+    UIWindow *originalKeyWindow = nil;
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    if (@available(iOS 13.0, *))
+    {
+        NSSet<UIScene *> *connectedScenes = [UIApplication sharedApplication].connectedScenes;
+        for (UIScene *scene in connectedScenes)
+        {
+            if (scene.activationState == UISceneActivationStateForegroundActive && [scene isKindOfClass:[UIWindowScene class]])
+            {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                for (UIWindow *window in windowScene.windows)
+                {
+                    if (window.isKeyWindow)
+                    {
+                        originalKeyWindow = window;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    else
+#endif
+    {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 130000
+        originalKeyWindow = [UIApplication sharedApplication].keyWindow;
+#endif
+    }
+    
+    return originalKeyWindow;
+}
+
 @end

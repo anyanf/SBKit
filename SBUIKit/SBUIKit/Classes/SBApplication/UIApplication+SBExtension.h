@@ -32,6 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 底部导航栏高度（包括安全区）
 + (CGFloat)sb_tabBarFullHeight;
 
+/// 获取keywindow
++ (UIWindow *)sb_keyWindow;
+
 @end
 
 NS_ASSUME_NONNULL_END

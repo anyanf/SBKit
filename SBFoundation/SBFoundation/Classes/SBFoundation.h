@@ -31,6 +31,7 @@
 
 // NSObject
 #import "SBEXTScope.h" // weak strong self
+#import "SBSingletonMacro.h" // 单例
 
 // NSString
 #import "SBStringMacro.h"
