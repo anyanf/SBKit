@@ -7,32 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+
+#import "SBMultiLevelTableViewCell.h"
+
 #import "SBMultiLevelTableNode.h"
 
 typedef void(^SBMultiLevelTableSelectBlock)(SBMultiLevelTableNode *node);
 
-@interface SBMultiLevelTableViewCell : UITableViewCell
-
-@property (nonatomic, strong, readonly) UIView *sb_contentView;
-
-- (void)setNode:(SBMultiLevelTableNode *)node;
-
-+ (NSValue *)cellSizeWithNode:(SBMultiLevelTableNode *)node
-                      maxSize:(NSValue *)maxSizeValue;
-
-@end
-
 @interface SBMultiLevelTableView : UITableView <UITableViewDelegate, UITableViewDataSource>
 
+//all nodes
+@property (nonatomic, copy) NSMutableArray<SBMultiLevelTableNode *> *multiLevelNodes;
 
 // 是否支持折叠展开，默认yes
 @property (nonatomic, assign) BOOL canFoldAndExpand;
+// 是否展开全部子节点 show the last status all child nodes keep when yes, or just show next level child nodes
+@property (nonatomic, assign ,getter=isPreservation) BOOL preservation;
 
-- (id)initWithFrame:(CGRect)frame
-          cellClass:(Class)cellClass
-              nodes:(NSArray*)nodes
-         rootNodeID:(NSString*)rootID
-   needPreservation:(BOOL)need 
-        selectBlock:(SBMultiLevelTableSelectBlock)block;
+- (instancetype)initWithFrame:(CGRect)frame
+                    cellClass:(Class)cellClass
+                  selectBlock:(SBMultiLevelTableSelectBlock)block;
 
 @end

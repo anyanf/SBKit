@@ -18,9 +18,7 @@
 
 @property (nonatomic, weak) SBMultiLevelTableNode *parentNode;
 
-@property (nonatomic, strong) NSHashTable *childrenNodes;
-
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSMutableArray<SBMultiLevelTableNode *> *childrenNodes;
 
 @property (nonatomic, assign, getter=isExpand) BOOL expand;
 
@@ -56,5 +54,15 @@
 + (instancetype)nodeWithParentID:(NSString*)parentID name:(NSString*)name nodeID:(NSString*)nodeID level:(NSUInteger)level isExpand:(BOOL)bol;
 
 + (instancetype)nodeWithParentID:(NSString*)parentID name:(NSString*)name nodeID:(NSString*)nodeID isExpand:(BOOL)bol;
+
++ (void)handleMultiLevelNodes:(NSMutableArray<SBMultiLevelTableNode *> *)multiLevelNodes;
+
++ (NSMutableArray<SBMultiLevelTableNode *> *)handleSingleLevelNodesDepth:(NSUInteger)level 
+                                                               parentIDs:(NSArray*)parentIDs
+                                                           childrenNodes:(NSMutableArray*)childrenNodes;
+
++ (NSMutableArray<SBMultiLevelTableNode *> *)handleSingleLevelNodesDepth:(NSUInteger)level
+                                                             parentNodes:(NSArray*)parentNodes
+                                                           childrenNodes:(NSMutableArray*)childrenNodes;
 
 @end
