@@ -35,7 +35,7 @@
     _node = node;
     
     // set indentation
-    CGFloat indentationX = (node.level - 1) * self.node.levelIndent;
+    CGFloat indentationX = node.level * self.node.levelIndent;
     [self moveNode:indentationX];
     
     // color 测试 sb_contentView 区域

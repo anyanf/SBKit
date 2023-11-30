@@ -17,8 +17,6 @@
 
 @property (nonatomic, strong) NSMutableArray<SBMultiLevelTableNode *> *displayNodesMutAry;
 
-@property (nonatomic, strong) NSMutableArray<NSIndexPath *> *needReloadNodesMutAry;
-
 @property (nonatomic, copy) SBMultiLevelTableSelectBlock block;
 
 @end
@@ -45,7 +43,6 @@
         self.backgroundColor = [UIColor whiteColor];
         
         _displayNodesMutAry = [NSMutableArray array];
-        _needReloadNodesMutAry = [NSMutableArray array];
         
         self.delegate = self;
         self.dataSource = self;
@@ -63,39 +60,60 @@
 
 - (void)reloadData {
     
-    [self addFirstLoadNodes];
+    [self setupDisplayNodes];
     
     [self setupNodeFrame];
     
     [super reloadData];
 }
 
-- (void)addFirstLoadNodes {
+- (void)setupDisplayNodes {
     // add parent nodes on the upper level
-    for (int i = 0 ; i < _multiLevelNodes.count;i++) {
+    for (int i = 0 ; i < self.multiLevelNodes.count;i++) {
         
-        SBMultiLevelTableNode *node = _multiLevelNodes[i];
+        SBMultiLevelTableNode *node = self.multiLevelNodes[i];
         if (node.isRoot) {
-            [_displayNodesMutAry addObject:node];
+            [self.displayNodesMutAry addObject:node];
+            
+            if (self.isPreservation) {
+                node.expand = YES;
+            }
             
             if (node.isExpand) {
-                [self expandNodesForParentID:node.nodeID insertIndex:[_displayNodesMutAry indexOfObject:node]];
+                [self expandNode:node
+                     insertIndex:[self.displayNodesMutAry indexOfObject:node]
+             needReloadIdxMutAry:nil];
             }
         }
     }
-    [self.needReloadNodesMutAry removeAllObjects];
 }
 
 - (void)setupNodeFrame {
-    for (int i = 0 ; i < _multiLevelNodes.count;i++) {
-        SBMultiLevelTableNode *node = _multiLevelNodes[i];
+    
+    NSMutableArray<SBMultiLevelTableNode *> *stack = [NSMutableArray array];
+    
+    // 将子节点逆序压入栈中
+    for (SBMultiLevelTableNode *childNode in [self.multiLevelNodes reverseObjectEnumerator]) {
+        [stack addObject:childNode];
+    }
+    
+    while ([stack count] > 0) {
+        SBMultiLevelTableNode *currentNode = stack.lastObject;
+        [stack removeObject:currentNode];
+
+        // 处理当前节点
         if ([self.cellClass isSubclassOfClass:SBMultiLevelTableViewCell.class]) {
-            node.cellSizeValue = [self.cellClass performSelector:@selector(cellSizeWithNode:maxSize:)
-                                                      withObject:node
-                                                      withObject:[NSValue valueWithCGSize:self.frame.size]];
+            currentNode.cellSizeValue = [self.cellClass performSelector:@selector(cellSizeWithNode:maxSize:)
+                                                             withObject:currentNode
+                                                             withObject:[NSValue valueWithCGSize:self.frame.size]];
         } else {
-            node.cellSizeValue = [SBMultiLevelTableViewCell cellSizeWithNode:node
-                                                                     maxSize:[NSValue valueWithCGSize:self.frame.size]];
+            currentNode.cellSizeValue = [SBMultiLevelTableViewCell cellSizeWithNode:currentNode
+                                                                            maxSize:[NSValue valueWithCGSize:self.frame.size]];
+        }
+
+        // 将子节点逆序压入栈中
+        for (SBMultiLevelTableNode *childNode in [currentNode.childrenNodes reverseObjectEnumerator]) {
+            [stack addObject:childNode];
         }
     }
 }
@@ -144,15 +162,15 @@
     
     [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     
-    [self.needReloadNodesMutAry removeAllObjects];
+    NSMutableArray<NSIndexPath *> *needReloadIdxMutAry = [NSMutableArray array];
     if (currentNode.isExpand) {
         //expand
-        [self expandNodesForParentID:currentNode.nodeID insertIndex:indexPath.row];
-        [tableView insertRowsAtIndexPaths:self.needReloadNodesMutAry withRowAnimation:UITableViewRowAnimationNone];
-    }else{
+        [self expandNode:currentNode insertIndex:indexPath.row needReloadIdxMutAry:needReloadIdxMutAry];
+        [tableView insertRowsAtIndexPaths:needReloadIdxMutAry withRowAnimation:UITableViewRowAnimationNone];
+    } else {
         //fold
-        [self foldNodesForLevel:currentNode.level currentIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:self.needReloadNodesMutAry withRowAnimation:UITableViewRowAnimationNone];
+        [self foldNode:currentNode currentIndex:indexPath.row needReloadIdxMutAry:needReloadIdxMutAry];
+        [tableView deleteRowsAtIndexPaths:needReloadIdxMutAry withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -160,45 +178,52 @@
 
 
 #pragma mark -  fold and expand
-- (void)foldNodesForLevel:(NSUInteger)level currentIndex:(NSUInteger)currentIndex {
+
+- (void)foldNode:(SBMultiLevelTableNode *)node
+    currentIndex:(NSUInteger)currentIndex
+    needReloadIdxMutAry:(NSMutableArray<NSIndexPath *> *)needReloadIdxMutAry {
     
     if (currentIndex + 1 < self.displayNodesMutAry.count) {
         NSMutableArray *tempArr = [self.displayNodesMutAry copy];
-        for (NSUInteger i = currentIndex+1 ; i<tempArr.count;i++) {
-            SBMultiLevelTableNode *node = tempArr[i];
-            if (node.level <= level) {
+        for (NSUInteger i = currentIndex + 1 ; i < tempArr.count; i++) {
+            SBMultiLevelTableNode *childNode = tempArr[i];
+            if (childNode.level <= node.level) {
+                // 说明 childNode 已经平级或者还高，结束
                 break;
             } else {
-                [self.displayNodesMutAry removeObject:node];
-                [self.needReloadNodesMutAry addObject:[NSIndexPath indexPathForRow:i inSection:0]]; //need reload nodes
+                childNode.expand = NO;
+                [self.displayNodesMutAry removeObject:childNode];
+                [needReloadIdxMutAry addObject:[NSIndexPath indexPathForRow:i inSection:0]]; //need reload nodes
             }
         }
     }
 }
 
-- (NSUInteger)expandNodesForParentID:(NSString*)parentID insertIndex:(NSUInteger)insertIndex {
-    
-    NSUInteger currentIdx = insertIndex;
+- (NSUInteger)expandNode:(SBMultiLevelTableNode *)node
+             insertIndex:(NSUInteger)insertIndex
+     needReloadIdxMutAry:(NSMutableArray<NSIndexPath *> *)needReloadIdxMutAry {
 
-    for (int i = 0 ; i < _multiLevelNodes.count;i++) {
-        SBMultiLevelTableNode *node = _multiLevelNodes[i];
-        if ([node.parentID isEqualToString:parentID]) {
-            if (!self.isPreservation) {
-                node.expand = NO;
-            }
-            
-            currentIdx++;
-            [self.displayNodesMutAry insertObject:node atIndex:currentIdx];
-            [self.needReloadNodesMutAry addObject:[NSIndexPath indexPathForRow:currentIdx inSection:0]]; //need reload nodes
-            
-            if (node.isExpand) {
-                currentIdx = [self expandNodesForParentID:node.nodeID insertIndex:currentIdx];
-            }
+    NSUInteger currentIdx = insertIndex;
+    
+    for (SBMultiLevelTableNode *childNode in node.childrenNodes) {
+        
+        if (self.isPreservation) {
+            childNode.expand = YES;
+        }
+        
+        currentIdx++;
+        [self.displayNodesMutAry insertObject:childNode atIndex:currentIdx];
+        [needReloadIdxMutAry addObject:[NSIndexPath indexPathForRow:currentIdx inSection:0]]; //need reload nodes
+        
+        if (childNode.isExpand) {
+            currentIdx = [self expandNode:childNode insertIndex:currentIdx needReloadIdxMutAry:needReloadIdxMutAry];
         }
     }
     
     return currentIdx;
 }
+
+
 
 
 
