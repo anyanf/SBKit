@@ -14,9 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SBMultiLevelTableViewCell : UITableViewCell
 
+@property (nonatomic, strong, readonly) SBMultiLevelTableNode *node;
+
 @property (nonatomic, strong, readonly) UIView *sb_contentView;
 
 - (void)setNode:(SBMultiLevelTableNode *)node;
+
+- (void)moveNode:(CGFloat)indentationX;
 
 + (NSValue *)cellSizeWithNode:(SBMultiLevelTableNode *)node
                       maxSize:(NSValue *)maxSizeValue;

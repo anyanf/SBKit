@@ -28,6 +28,8 @@ typedef void(^SBMultiLevelTableSelectBlock)(SBMultiLevelTableNode *node);
                     cellClass:(Class)cellClass
                   selectBlock:(SBMultiLevelTableSelectBlock)block;
 
+/// 更新指定node以及子node
+- (void)reloadNodeAndChildrenNode:(SBMultiLevelTableNode *)node;
 
 /* demo
  

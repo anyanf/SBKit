@@ -176,6 +176,30 @@
 
 #pragma mark - reload node
 
+- (void)reloadNodeAndChildrenNode:(SBMultiLevelTableNode *)node {
+    
+    NSMutableArray<NSIndexPath *> *needReloadIdxMutAry = [NSMutableArray array];
+    
+    // 先把自己加进去
+    NSInteger currentIndex = [self.displayNodesMutAry indexOfObject:node];
+    [needReloadIdxMutAry addObject:[NSIndexPath indexPathForRow:currentIndex inSection:0]]; //need reload nodes
+
+    
+    // 显示node中所有的子节点
+    if (currentIndex + 1 < self.displayNodesMutAry.count) {
+        NSMutableArray *tempArr = [self.displayNodesMutAry copy];
+        for (NSUInteger i = currentIndex + 1 ; i < tempArr.count; i++) {
+            SBMultiLevelTableNode *childNode = tempArr[i];
+            if (childNode.level <= node.level) {
+                // 说明 childNode 已经平级或者还高，结束
+                break;
+            } else {
+                [needReloadIdxMutAry addObject:[NSIndexPath indexPathForRow:i inSection:0]]; //need reload nodes
+            }
+        }
+    }
+    [self reloadRowsAtIndexPaths:needReloadIdxMutAry withRowAnimation:UITableViewRowAnimationNone];
+}
 
 #pragma mark -  fold and expand
 
