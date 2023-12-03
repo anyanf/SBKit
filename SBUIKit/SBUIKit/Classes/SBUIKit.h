@@ -57,6 +57,9 @@
 
 // textfiled
 #import "SBTextField.h"
+// textview
+#import "SBTextView.h"
+
 
 // view
 #import "UIView+SBExtension.h"
