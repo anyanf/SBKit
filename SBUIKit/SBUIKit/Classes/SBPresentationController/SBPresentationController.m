@@ -7,6 +7,10 @@
 
 #import "SBPresentationController.h"
 
+@interface SBPresentationController () <UIGestureRecognizerDelegate>
+
+@end
+
 @implementation SBPresentationController
 
 
@@ -37,11 +41,23 @@
         }
     }
     if (!hasAddTap) {
-        UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(containerViewDidTap)];
-        [self.containerView addGestureRecognizer:tap];
-    }    
+        UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(containerViewDidTap)];
+        tapGesture.delegate = self; // 设置代理
+        [self.containerView addGestureRecognizer:tapGesture];
+    }
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    if (!self.presentedView) {
+        return YES;
+    }
+    
+    CGPoint location = [touch locationInView:self.presentedView];
+    
+    // 如果点击位置不在子视图上，则执行手势
+    return ![self.presentedView pointInside:location withEvent:nil];
+}
 
 - (void)containerViewDidTap {
     [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
