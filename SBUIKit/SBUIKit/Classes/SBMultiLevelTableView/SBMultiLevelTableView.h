@@ -16,8 +16,12 @@ typedef void(^SBMultiLevelTableSelectBlock)(SBMultiLevelTableNode *node);
 
 @interface SBMultiLevelTableView : UITableView <UITableViewDelegate, UITableViewDataSource>
 
-//all nodes
+// all nodes
 @property (nonatomic, copy) NSArray<SBMultiLevelTableNode *> *multiLevelNodes;
+
+// 实际显示的node排列，扁平化
+@property (nonatomic, strong) NSMutableArray<SBMultiLevelTableNode *> *displayNodesMutAry;
+
 
 // 是否支持折叠展开，默认yes
 @property (nonatomic, assign) BOOL canFoldAndExpand;

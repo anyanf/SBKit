@@ -15,7 +15,6 @@
 /// 默认是 SBMultiLevelTableViewCell
 @property (nonatomic, assign) Class cellClass;
 
-@property (nonatomic, strong) NSMutableArray<SBMultiLevelTableNode *> *displayNodesMutAry;
 
 @property (nonatomic, copy) SBMultiLevelTableSelectBlock block;
 
