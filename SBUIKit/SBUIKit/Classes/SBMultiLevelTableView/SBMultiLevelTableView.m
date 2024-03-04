@@ -197,7 +197,22 @@
             }
         }
     }
-    [self reloadRowsAtIndexPaths:needReloadIdxMutAry withRowAnimation:UITableViewRowAnimationNone];
+    
+    // 不能直接reload cell，因为有键盘光标会因为reload消失
+//    [self reloadRowsAtIndexPaths:needReloadIdxMutAry withRowAnimation:UITableViewRowAnimationNone];
+    NSArray<NSIndexPath *> *indexPathsForVisibleRows =  self.indexPathsForVisibleRows;
+    for (NSIndexPath *indexPath in needReloadIdxMutAry) {
+        for (NSIndexPath *visiableIndexPath in indexPathsForVisibleRows) {
+            if (indexPath.row == visiableIndexPath.row) {
+                SBMultiLevelTableViewCell *cell = [self cellForRowAtIndexPath:indexPath];
+                if (cell) {
+                    SBMultiLevelTableNode *node = [self.displayNodesMutAry sb_objectAtIndex:indexPath.row];
+                    cell.node = node;
+                }
+                break;
+            }
+        }
+    }
 }
 
 #pragma mark -  fold and expand
